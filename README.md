@@ -1,4 +1,4 @@
-# 나이스 본인인증 API 연동 서버
+# 나이스 본인확인(통합형) API 연동 서버
 
 [NICE API 포털](https://www.niceapi.co.kr/#/)
 
@@ -67,3 +67,11 @@ $ vim ./config.json
 ```console
 $ docker run -p 8000:8000 nice-api-server
 ```
+
+## 참고
+
+[python AES 암호화](https://jongmin86.tistory.com/207)
+[[php] NICE API 통합형 본인확인 서비스 연동하기](https://lovelydoll.tistory.com/80)
+[[Next.js] Nice API 본인인증 구현하기](https://rick-ford.tistory.com/entry/Nextjs-Nice-API-%EB%B3%B8%EC%9D%B8%EC%9D%B8%EC%A6%9D-%EA%B5%AC%ED%98%84%ED%95%98%EA%B8%B0)
+[[Node.js] nice 본인인증 모듈 크로스 도메인 환경에서 연동하기(서버)](https://www.happykoo.net/@happykoo/posts/136)
+[[Node.js] nice 본인인증 모듈 크로스 도메인 환경에서 연동하기(클라이언트)](https://www.happykoo.net/@happykoo/posts/143)
