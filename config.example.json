@@ -1,0 +1,10 @@
+{
+    "NICE": {
+        "API_URL": "",
+        "CLIENT_ID": "",
+        "PRODUCT_ID": "",
+        "SECRET_KEY": "",
+        "ACCESS_TOKEN": ""
+    },
+    "CLIENTS": ["https://localhost:8080", "https://localhost"]
+}
