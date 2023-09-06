@@ -1,6 +1,6 @@
 # 나이스 본인인증 API 연동 서버
 
-[NICE API 포털]{https://www.niceapi.co.kr/#/apis/detail?ctgrCd=0100&prdId=31}
+[NICE API 포털](https://www.niceapi.co.kr/#/)
 
 ## 실행 방법
 
