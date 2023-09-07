@@ -1,9 +1,15 @@
 from pydantic import BaseModel
 
+import urllib.parse as urlparse
+from urllib.parse import urlencode
+
+from requests.models import PreparedRequest
+
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 
 from starlette.middleware.sessions import SessionMiddleware
+from starlette.responses import RedirectResponse
 
 import traceback
 
@@ -40,10 +46,12 @@ async def session(req: Request, call_next):
     return response
 
 @app.get('/nice/encrypt/data')
-async def nice_encrypt(req: Request, returnUrl: str):
+async def nice_encrypt(req: Request, returnUrl: str, redirectUrl: str):
 
     try:
         result = utils.encrypt_request_data(returnUrl)
+
+        req.session["redirectUrl"] = redirectUrl
 
         # 복호화를 위해, 암호화 키를 세션에 저장
         req.session["_nice_key"] = result["key"]
@@ -73,6 +81,11 @@ async def nice_decrypt_post(req: Request, body: DecryptRequest):
         if key is None or iv is None or req_no is None or period is None or timestamp is None:
             raise HTTPException(400)
 
+        redirectUrl = req.session.get("redirectUrl")
+
+        if redirectUrl is None:
+            raise HTTPException(400)
+
         enc_data = body.enc_data
 
         result = utils.decrypt_response_data(enc_data, key, iv)
@@ -88,7 +101,14 @@ async def nice_decrypt_post(req: Request, body: DecryptRequest):
     if not utils.is_token_valid(period, timestamp):
         raise HTTPException(401, '토큰이 만료되었습니다. 다시 시도하세요.')
 
-    return result
+
+    temp = PreparedRequest()
+    temp.prepare_url(redirectUrl, result)
+    url = temp.url
+
+    res = RedirectResponse(url=url if url else redirectUrl)
+
+    return res
 
 @app.get('/nice/decrypt/data')
 async def nice_decrypt_get(
@@ -108,6 +128,11 @@ async def nice_decrypt_get(
         if key is None or iv is None or req_no is None or period is None or timestamp is None:
             raise HTTPException(400)
 
+        redirectUrl = req.session.get("redirectUrl")
+
+        if redirectUrl is None:
+            raise HTTPException(400)
+
         result = utils.decrypt_response_data(enc_data, key, iv)
 
     except Exception as e:
@@ -121,4 +146,10 @@ async def nice_decrypt_get(
     if not utils.is_token_valid(period, timestamp):
         raise HTTPException(401, '토큰이 만료되었습니다. 다시 시도하세요.')
 
-    return result
+    temp = PreparedRequest()
+    temp.prepare_url(redirectUrl, result)
+    url = temp.url
+
+    res = RedirectResponse(url=url if url else redirectUrl)
+
+    return res
